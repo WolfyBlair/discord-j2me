@@ -3,6 +3,7 @@ package com.gtrxac.discord;
 import java.util.*;
 import javax.microedition.lcdui.*;
 import cc.nnproject.json.*;
+import com.gtrxac.discord.plugin.*;
 
 public class DMSelector extends ListScreen implements CommandListener, Strings {
     Vector lastDMs;
@@ -116,6 +117,7 @@ public class DMSelector extends ListScreen implements CommandListener, Strings {
             if (c == SELECT_COMMAND) {
                 App.isDM = true;
                 App.selectedDmChannel = dmCh;
+                PluginManager.fireDMChannelSelected(dmCh);
                 App.openChannelView(true);
             }
 //#ifdef OVER_100KB

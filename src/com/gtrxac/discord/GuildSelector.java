@@ -4,6 +4,7 @@ import javax.microedition.lcdui.*;
 import javax.microedition.rms.*;
 import cc.nnproject.json.*;
 import java.util.*;
+import com.gtrxac.discord.plugin.*;
 
 public class GuildSelector extends ListScreen implements CommandListener, Strings {
     boolean isFavGuilds;
@@ -163,6 +164,7 @@ public class GuildSelector extends ListScreen implements CommandListener, String
                 }
     
                 App.selectedGuild = g;
+                PluginManager.fireGuildSelected(g);
                 App.openChannelSelector(false, false);
             }
 //#ifdef OVER_100KB

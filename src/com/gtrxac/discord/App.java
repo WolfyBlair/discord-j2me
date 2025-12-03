@@ -6,109 +6,111 @@ import javax.microedition.rms.*;
 import javax.microedition.io.file.*;
 import java.util.*;
 import cc.nnproject.json.*;
+import com.gtrxac.discord.plugin.*;
 
 public class App extends MIDlet implements Strings {
-	public static final int VERSION_CODE = 28;
-	public static final String VERSION_NAME = "5.2.0 pre1";
+    public static final int VERSION_CODE = 28;
+    public static final String VERSION_NAME = "5.2.0 pre1";
 
-	// Should match the app's jar file name (used by auto update system)
-	public static final String VERSION_VARIANT =
+    // Should match the app's jar file name (used by auto update system)
+    public static final String VERSION_VARIANT =
 //#ifdef DEBUG_VERSION
-	"debug";
+    "debug";
 //#endif
 //#ifdef MIDP2_VERSION
-	"midp2";
+    "midp2";
 //#endif
 //#ifdef S40V3_VERSION
-	"s40v3";
+    "s40v3";
 //#endif
 //#ifdef NOKIA_128PX_VERSION
-	"nokia_128px";
+    "nokia_128px";
 //#endif
 //#ifdef NOKIA_128PX_TLS_VERSION
-	"nokia_128px_tls";
+    "nokia_128px_tls";
 //#endif
 //#ifdef S40V2
-	"s40v2";
+    "s40v2";
 //#endif
 //#ifdef MIDP2_ALT
-	"midp2_alt";
+    "midp2_alt";
 //#endif
 //#ifdef MIDP2_ALT_TLS
-	"midp2_alt_tls";
+    "midp2_alt_tls";
 //#endif
 //#ifdef S60V2
-	"s60v2";
+    "s60v2";
 //#endif
 //#ifdef BLACKBERRY
-	"blackberry";
+    "blackberry";
 //#endif
 //#ifdef SAMSUNG_FULL
-	"samsung";
+    "samsung";
 //#endif
 //#ifdef SAMSUNG_100KB
-	"samsung_100kb";
+    "samsung_100kb";
 //#endif
 //#ifdef LG
-	"lg";
+    "lg";
 //#endif
 //#ifdef J2ME_LOADER
-	"jl";
+    "jl";
 //#endif
 
-	public static final long DISCORD_EPOCH = 1420070400000L;
+    public static final long DISCORD_EPOCH = 1420070400000L;
 
-	static Display disp;
+    static Display disp;
 
-	static GatewayThread gateway;
-	static String uploadToken;
-	static String myUserId;
-	static boolean isLiteProxy;
+    static GatewayThread gateway;
+    static String uploadToken;
+    static String myUserId;
+    static boolean isLiteProxy;
 
-	static Vector guilds;
-	static Guild selectedGuild;
-	static GuildSelector guildSelector;
-	static Vector subscribedGuilds;
+    static Vector guilds;
+    static Guild selectedGuild;
+    static GuildSelector guildSelector;
+    static Vector subscribedGuilds;
 //#ifdef OVER_100KB
-	static JSONArray unsortedGuilds;
+    static JSONArray unsortedGuilds;
 //#endif
 
-	static Vector channels;
-	static Channel selectedChannel;
-	static ChannelSelector channelSelector;
-	static boolean channelIsOpen;
+    static Vector channels;
+    static Channel selectedChannel;
+    static ChannelSelector channelSelector;
+    static boolean channelIsOpen;
 
-	static Vector threads;
-	static ThreadSelector threadSelector;
-	static Channel selectedChannelForThreads;
+    static Vector threads;
+    static ThreadSelector threadSelector;
+    static Channel selectedChannelForThreads;
 
-	static Vector messages;
-	static ChannelView channelView;
-	static Vector typingUsers;
-	static Vector typingUserIDs;
+    static Vector messages;
+    static ChannelView channelView;
+    static Vector typingUsers;
+    static Vector typingUserIDs;
 
-	static AttachmentView attachmentView;
+    static AttachmentView attachmentView;
 
-	// set to true if loading screen shouldn't be shown for next HTTPThread call
-	static boolean dontShowLoadScreen;
+    // set to true if loading screen shouldn't be shown for next HTTPThread call
+    static boolean dontShowLoadScreen;
 
-	static boolean isDM;
-	static Vector dmChannels;
-	static DMChannel selectedDmChannel;
-	static DMSelector dmSelector;
+    static boolean isDM;
+    static Vector dmChannels;
+    static DMChannel selectedDmChannel;
+    static DMSelector dmSelector;
 
-	static Font authorFont;
-	static Font timestampFont;
-	static Font messageFont;
-	static Font titleFont;
+    static Font authorFont;
+    static Font timestampFont;
+    static Font messageFont;
+    static Font titleFont;
 
-	static Icons ic;
+    static Icons ic;
 
     static {
-		subscribedGuilds = new Vector();
-		IconCache.init();
-		NameColorCache.init();
-		UnreadManager.init();
+        subscribedGuilds = new Vector();
+        IconCache.init();
+        NameColorCache.init();
+        UnreadManager.init();
+        PluginManager.initialize();
     }
 
     public static App instance;
@@ -134,276 +136,282 @@ public class App extends MIDlet implements Strings {
                 login();
             }
             started = true;
+            PluginManager.fireAppStart();
         }
     }
 
-    public void pauseApp() {}
+    public void pauseApp() {
+        PluginManager.fireAppPause();
+    }
 
-    public void destroyApp(boolean unconditional) {}
+    public void destroyApp(boolean unconditional) {
+        PluginManager.fireAppDestroy();
+    }
 
-	public static boolean hasSeenGatewayWarningTemp;
+    public static boolean hasSeenGatewayWarningTemp;
 
-	public static void startGateway() {
+    public static void startGateway() {
 //#ifdef PROXYLESS_SUPPORT
-		if (Settings.proxyless && !hasSeenGatewayWarningTemp && !Settings.hasSeenGatewayWarning) {
-			new Thread(new GatewayWarningDialog()).start();
-		} else
+        if (Settings.proxyless && !hasSeenGatewayWarningTemp && !Settings.hasSeenGatewayWarning) {
+            new Thread(new GatewayWarningDialog()).start();
+        } else
 //#endif
-		{
-			gateway = new GatewayThread();
-			gateway.start();
-		}
-	}
+        {
+            gateway = new GatewayThread();
+            gateway.start();
+        }
+    }
 
     public static void login() {
-		ic = null;
-		ic = new Icons();
+        ic = null;
+        ic = new Icons();
 
-		guilds = null;
-		dmChannels = null;
+        guilds = null;
+        dmChannels = null;
 
-		Theme.load();
+        Theme.load();
         loadFonts();
         disp.setCurrent(MainMenu.get(true));
 
         if (Settings.useGateway) startGateway();
+        PluginManager.fireLogin();
     }
 
-	public static void error(String message, Displayable next) {
-		disp.setCurrent(new Dialog(Locale.get(ERROR_TITLE), message, next));
+    public static void error(String message, Displayable next) {
+        disp.setCurrent(new Dialog(Locale.get(ERROR_TITLE), message, next));
 
-		// clear banner text (e.g. hide "sending message" text if message sending fails)
-		if (channelView != null) channelView.bannerText = null;
-	}
-	
-	public static void error(Exception e, Displayable next) {
-		e.printStackTrace();
-		error(e.toString(), next);
-	}
-	
-	public static void error(String message) {
-		error(message, null);
-	}
+        // clear banner text (e.g. hide "sending message" text if message sending fails)
+        if (channelView != null) channelView.bannerText = null;
+    }
+    
+    public static void error(Exception e, Displayable next) {
+        e.printStackTrace();
+        error(e.toString(), next);
+    }
+    
+    public static void error(String message) {
+        error(message, null);
+    }
 
-	public static void error(Exception e) {
-		e.printStackTrace();
-		error(e.toString());
-	}
+    public static void error(Exception e) {
+        e.printStackTrace();
+        error(e.toString());
+    }
 
-	public static boolean gatewayActive() {
-		return gateway != null && gateway.isAlive();
-	}
+    public static boolean gatewayActive() {
+        return gateway != null && gateway.isAlive();
+    }
 
-	public static void loadFonts() {
-		final int[] fontSizes = {Font.SIZE_SMALL, Font.SIZE_MEDIUM, Font.SIZE_LARGE};
+    public static void loadFonts() {
+        final int[] fontSizes = {Font.SIZE_SMALL, Font.SIZE_MEDIUM, Font.SIZE_LARGE};
 
-		authorFont = Font.getFont(Font.FACE_PROPORTIONAL, Font.STYLE_BOLD, fontSizes[Settings.authorFontSize]);
-		timestampFont = Font.getFont(Font.FACE_PROPORTIONAL, Font.STYLE_PLAIN, fontSizes[Settings.authorFontSize]);
-		messageFont = Font.getFont(Font.FACE_PROPORTIONAL, Font.STYLE_PLAIN, fontSizes[Settings.messageFontSize]);
-		titleFont = Font.getFont(Font.FACE_PROPORTIONAL, Font.STYLE_BOLD, fontSizes[Settings.messageFontSize]);
+        authorFont = Font.getFont(Font.FACE_PROPORTIONAL, Font.STYLE_BOLD, fontSizes[Settings.authorFontSize]);
+        timestampFont = Font.getFont(Font.FACE_PROPORTIONAL, Font.STYLE_PLAIN, fontSizes[Settings.authorFontSize]);
+        messageFont = Font.getFont(Font.FACE_PROPORTIONAL, Font.STYLE_PLAIN, fontSizes[Settings.messageFontSize]);
+        titleFont = Font.getFont(Font.FACE_PROPORTIONAL, Font.STYLE_BOLD, fontSizes[Settings.messageFontSize]);
 
 //#ifdef TOUCH_SUPPORT
-		KineticScrollingCanvas.scrollUnit = messageFont.getHeight();
+        KineticScrollingCanvas.scrollUnit = messageFont.getHeight();
 //#endif
 
-		ListScreen.setAppearance(messageFont, Settings.menuIconSize, Locale.get(SELECT), Locale.get(SELECT_L), Locale.get(BACK), Locale.get(BACK_L));
-		ListScreen.noItemsString = Locale.get(LIST_EMPTY);
-		Dialog.okLabel = Locale.get(OK);
-		Dialog.okLabelLong = Locale.get(OK_L);
+        ListScreen.setAppearance(messageFont, Settings.menuIconSize, Locale.get(SELECT), Locale.get(SELECT_L), Locale.get(BACK), Locale.get(BACK_L));
+        ListScreen.noItemsString = Locale.get(LIST_EMPTY);
+        Dialog.okLabel = Locale.get(OK);
+        Dialog.okLabelLong = Locale.get(OK_L);
 //#ifdef EMOJI_SUPPORT
-		FormattedStringPartEmoji.loadEmoji(messageFont.getHeight());
+        FormattedStringPartEmoji.loadEmoji(messageFont.getHeight());
 //#endif
 
 //#ifdef NOKIA_THEME_BACKGROUND
         if (Settings.theme != Theme.SYSTEM)
 //#endif
         ChannelViewItem.drawUnreadIndicatorImage(null, 0, 0);
-	}
+    }
 
-	// Required for Wi-Fi support on BlackBerry
-	// See https://github.com/shinovon/JTube/blob/670ea59a94d6b5be8af53d94d7804b2d35b64e52/src/jtube/Util.java#L521
-	public static String getPlatformSpecificUrl(String url) {
+    // Required for Wi-Fi support on BlackBerry
+    // See https://github.com/shinovon/JTube/blob/670ea59a94d6b5be8af53d94d7804b2d35b64e52/src/jtube/Util.java#L521
+    public static String getPlatformSpecificUrl(String url) {
 //#ifdef BLACKBERRY
-		if (Settings.bbWifi) {
-			return url + ";deviceside=true;interface=wifi";
-		}
+        if (Settings.bbWifi) {
+            return url + ";deviceside=true;interface=wifi";
+        }
 //#endif
-		return url;
-	}
+        return url;
+    }
 
-	public static void updateUnreadIndicators(boolean isDM, String chId) {
-		if (isDM) {
-			if (dmSelector != null) dmSelector.update(chId);
-		} else {
-			if (threadSelector != null) threadSelector.update(chId);
-			if (channelSelector != null) channelSelector.update(chId);
-			if (guildSelector != null) guildSelector.update();
-		}
-	}
+    public static void updateUnreadIndicators(boolean isDM, String chId) {
+        if (isDM) {
+            if (dmSelector != null) dmSelector.update(chId);
+        } else {
+            if (threadSelector != null) threadSelector.update(chId);
+            if (channelSelector != null) channelSelector.update(chId);
+            if (guildSelector != null) guildSelector.update();
+        }
+    }
 
-	// The following few methods for opening certain screens take two arguments:
-	// - reload: if the screen should be reloaded (its data re-fetched) when the "keep channels loaded" option is disabled
-	// - forceReload: if it should be reloaded in any case, even when "keep channels loaded" is enabled
+    // The following few methods for opening certain screens take two arguments:
+    // - reload: if the screen should be reloaded (its data re-fetched) when the "keep channels loaded" option is disabled
+    // - forceReload: if it should be reloaded in any case, even when "keep channels loaded" is enabled
 
-	public static void openGuildSelector(boolean reload, boolean forceReload) {
-		if (Settings.highRamMode) reload = false;
-		
-		if (reload || forceReload || guildSelector == null || guilds == null) {
-			HTTPThread h = new HTTPThread(HTTPThread.FETCH_GUILDS);
-			h.forceReload = forceReload;
-			h.start();
-		} else {
-			try {
-				if (guildSelector.isFavGuilds) {
-					// Guild list is already loaded but current selector is showing favorite guilds - create new selector from full guild list
-					guildSelector = new GuildSelector(guilds, false);
-				}
-				disp.setCurrent(guildSelector);
-			}
-			catch (Exception e) {
-				error(e);
-			}
-		}
-	}
+    public static void openGuildSelector(boolean reload, boolean forceReload) {
+        if (Settings.highRamMode) reload = false;
+        
+        if (reload || forceReload || guildSelector == null || guilds == null) {
+            HTTPThread h = new HTTPThread(HTTPThread.FETCH_GUILDS);
+            h.forceReload = forceReload;
+            h.start();
+        } else {
+            try {
+                if (guildSelector.isFavGuilds) {
+                    // Guild list is already loaded but current selector is showing favorite guilds - create new selector from full guild list
+                    guildSelector = new GuildSelector(guilds, false);
+                }
+                disp.setCurrent(guildSelector);
+            }
+            catch (Exception e) {
+                error(e);
+            }
+        }
+    }
 
-	public static void openChannelSelector(boolean reload, boolean forceReload) {
-		if (Settings.highRamMode) reload = false;
-		boolean keepLoaded = !reload && !forceReload;
+    public static void openChannelSelector(boolean reload, boolean forceReload) {
+        if (Settings.highRamMode) reload = false;
+        boolean keepLoaded = !reload && !forceReload;
 
-		if (keepLoaded && channelSelector != null && channels != null && channels == selectedGuild.channels) {
-			disp.setCurrent(channelSelector);
-		}
-		else if (keepLoaded && selectedGuild.channels != null) {
-			try {
-				channels = selectedGuild.channels;
-				channelSelector = new ChannelSelector();
-				disp.setCurrent(channelSelector);
-			}
-			catch (Exception e) {
-				error(e);
-			}
-		}
-		else {
-			new HTTPThread(HTTPThread.FETCH_CHANNELS).start();
-		}
-	}
+        if (keepLoaded && channelSelector != null && channels != null && channels == selectedGuild.channels) {
+            disp.setCurrent(channelSelector);
+        }
+        else if (keepLoaded && selectedGuild.channels != null) {
+            try {
+                channels = selectedGuild.channels;
+                channelSelector = new ChannelSelector();
+                disp.setCurrent(channelSelector);
+            }
+            catch (Exception e) {
+                error(e);
+            }
+        }
+        else {
+            new HTTPThread(HTTPThread.FETCH_CHANNELS).start();
+        }
+    }
 
-	public static void openThreadSelector(boolean reload, boolean forceReload) {
-		if (Settings.highRamMode) reload = false;
-		boolean keepLoaded = !reload && !forceReload;
+    public static void openThreadSelector(boolean reload, boolean forceReload) {
+        if (Settings.highRamMode) reload = false;
+        boolean keepLoaded = !reload && !forceReload;
 
-		if (keepLoaded && threadSelector != null && threads != null && threads == selectedChannelForThreads.threads) {
-			disp.setCurrent(threadSelector);
-		}
-		else if (keepLoaded && selectedChannelForThreads.threads != null) {
-			try {
-				threads = selectedChannelForThreads.threads;
-				threadSelector = new ThreadSelector();
-				disp.setCurrent(threadSelector);
-			}
-			catch (Exception e) {
-				error(e);
-			}
-		}
-		else {
-			new HTTPThread(HTTPThread.FETCH_THREADS).start();
-		}
-	}
+        if (keepLoaded && threadSelector != null && threads != null && threads == selectedChannelForThreads.threads) {
+            disp.setCurrent(threadSelector);
+        }
+        else if (keepLoaded && selectedChannelForThreads.threads != null) {
+            try {
+                threads = selectedChannelForThreads.threads;
+                threadSelector = new ThreadSelector();
+                disp.setCurrent(threadSelector);
+            }
+            catch (Exception e) {
+                error(e);
+            }
+        }
+        else {
+            new HTTPThread(HTTPThread.FETCH_THREADS).start();
+        }
+    }
 
-	public static void openDMSelector(boolean reload, boolean forceReload) {
-		if (Settings.highRamMode) reload = false;
-		
-		if (reload || forceReload || dmSelector == null || dmChannels == null) {
-			new HTTPThread(HTTPThread.FETCH_DM_CHANNELS).start();
-		} else {
-			disp.setCurrent(dmSelector);
-		}
-	}
+    public static void openDMSelector(boolean reload, boolean forceReload) {
+        if (Settings.highRamMode) reload = false;
+        
+        if (reload || forceReload || dmSelector == null || dmChannels == null) {
+            new HTTPThread(HTTPThread.FETCH_DM_CHANNELS).start();
+        } else {
+            disp.setCurrent(dmSelector);
+        }
+    }
 
-	public static void openChannelView(boolean reload) {
-		if (reload || channelView == null || messages == null) {
-			new HTTPThread(HTTPThread.FETCH_MESSAGES).start();
-			// markCurrentChannelRead is called by the thread
-		} else {
-			disp.setCurrent(channelView);
-			markCurrentChannelRead();
-		}
-	}
+    public static void openChannelView(boolean reload) {
+        if (reload || channelView == null || messages == null) {
+            new HTTPThread(HTTPThread.FETCH_MESSAGES).start();
+            // markCurrentChannelRead is called by the thread
+        } else {
+            disp.setCurrent(channelView);
+            markCurrentChannelRead();
+        }
+    }
 
-	public static void markCurrentChannelRead() {
-		// Ensure that the channel gets marked as read even when gateway is disabled, by updating the channel's last message ID
-		if (!gatewayActive() && messages != null && messages.size() > 0) {
-			Message lastMessage = (Message) messages.elementAt(0);
-			long newLastMessageID = Long.parseLong(lastMessage.id);
-			if (isDM) {
-				if (selectedDmChannel.lastMessageID < newLastMessageID) {
-					selectedDmChannel.lastMessageID = newLastMessageID;
-				}
-			} else {
-				if (selectedChannel.lastMessageID < newLastMessageID) {
-					selectedChannel.lastMessageID = newLastMessageID;
-				}
-			}
-		}
-		if (isDM) {
-			selectedDmChannel.markRead();
-			updateUnreadIndicators(true, selectedDmChannel.id);
-		} else {
-			selectedChannel.markRead();
-			updateUnreadIndicators(false, selectedChannel.id);
-		}
-	}
+    public static void markCurrentChannelRead() {
+        // Ensure that the channel gets marked as read even when gateway is disabled, by updating the channel's last message ID
+        if (!gatewayActive() && messages != null && messages.size() > 0) {
+            Message lastMessage = (Message) messages.elementAt(0);
+            long newLastMessageID = Long.parseLong(lastMessage.id);
+            if (isDM) {
+                if (selectedDmChannel.lastMessageID < newLastMessageID) {
+                    selectedDmChannel.lastMessageID = newLastMessageID;
+                }
+            } else {
+                if (selectedChannel.lastMessageID < newLastMessageID) {
+                    selectedChannel.lastMessageID = newLastMessageID;
+                }
+            }
+        }
+        if (isDM) {
+            selectedDmChannel.markRead();
+            updateUnreadIndicators(true, selectedDmChannel.id);
+        } else {
+            selectedChannel.markRead();
+            updateUnreadIndicators(false, selectedChannel.id);
+        }
+    }
 
-	public static void openAttachmentView(boolean reload, Message msg) {
-		if (reload || attachmentView == null || attachmentView.msg != msg) {
-			attachmentView = new AttachmentView(msg);
-			new HTTPThread(HTTPThread.FETCH_ATTACHMENTS).start();
-		}
-		disp.setCurrent(attachmentView);
-	}
+    public static void openAttachmentView(boolean reload, Message msg) {
+        if (reload || attachmentView == null || attachmentView.msg != msg) {
+            attachmentView = new AttachmentView(msg);
+            new HTTPThread(HTTPThread.FETCH_ATTACHMENTS).start();
+        }
+        disp.setCurrent(attachmentView);
+    }
 
-	public static void platRequest(String url) {
-		try {
-			if (instance.platformRequest(url)) {
+    public static void platRequest(String url) {
+        try {
+            if (instance.platformRequest(url)) {
 //#ifdef OVER_100KB
-				disp.setCurrent(new PlatformRequestDialog());
+                disp.setCurrent(new PlatformRequestDialog());
 //#else
-				error(Locale.get(PLAT_REQUEST_FAILED));
+                error(Locale.get(PLAT_REQUEST_FAILED));
 //#endif
-			}
-		}
-		catch (Exception e) {
-			String msg =
-				Locale.get(PLAT_REQUEST_ERROR_PREFIX) +
-				e.toString() +
-				Locale.get(PLAT_REQUEST_ERROR_SUFFIX) +
-				url;
-			disp.setCurrent(new MessageCopyBox(Locale.get(ERROR_TITLE), msg));
-		}
-	}
+            }
+        }
+        catch (Exception e) {
+            String msg =
+                Locale.get(PLAT_REQUEST_ERROR_PREFIX) +
+                e.toString() +
+                Locale.get(PLAT_REQUEST_ERROR_SUFFIX) +
+                url;
+            disp.setCurrent(new MessageCopyBox(Locale.get(ERROR_TITLE), msg));
+        }
+    }
 
 //#ifdef EMOJI_SUPPORT
-	public static void gatewayToggleGuildEmoji() {
-		if (gatewayActive()) {
-			JSONObject msg = new JSONObject();
-			msg.put("op", -1);
-			msg.put("t", "GATEWAY_SHOW_GUILD_EMOJI");
-			msg.put("d", FormattedString.emojiMode == FormattedString.EMOJI_MODE_ALL);
-			gateway.send(msg);
-		}
-	}
+    public static void gatewayToggleGuildEmoji() {
+        if (gatewayActive()) {
+            JSONObject msg = new JSONObject();
+            msg.put("op", -1);
+            msg.put("t", "GATEWAY_SHOW_GUILD_EMOJI");
+            msg.put("d", FormattedString.emojiMode == FormattedString.EMOJI_MODE_ALL);
+            gateway.send(msg);
+        }
+    }
 //#endif
 
 //#ifdef OVER_100KB
-	public static void gatewaySendTyping() {
-		if (gatewayActive() && Settings.sendTyping) {
-			JSONObject msg = new JSONObject();
-			msg.put("op", -1);
-			msg.put("t", "GATEWAY_SEND_TYPING");
-			msg.put("d", isDM ? selectedDmChannel.id : selectedChannel.id);
-			gateway.send(msg);
-		}
-	}
+    public static void gatewaySendTyping() {
+        if (gatewayActive() && Settings.sendTyping) {
+            JSONObject msg = new JSONObject();
+            msg.put("op", -1);
+            msg.put("t", "GATEWAY_SEND_TYPING");
+            msg.put("d", isDM ? selectedDmChannel.id : selectedChannel.id);
+            gateway.send(msg);
+        }
+    }
 //#endif
 
     public static Displayable createTextEntryScreen(Message recipientMsg, String fileName, FileConnection fc) {

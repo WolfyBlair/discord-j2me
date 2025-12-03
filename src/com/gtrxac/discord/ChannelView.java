@@ -4,6 +4,7 @@ import java.util.*;
 import javax.microedition.lcdui.*;
 import javax.microedition.lcdui.game.*;
 import cc.nnproject.json.*;
+import com.gtrxac.discord.plugin.*;
 
 /**
  * Message list for channels (both guild channels and DM channels).
@@ -75,6 +76,7 @@ public class ChannelView extends KineticScrollingCanvas implements CommandListen
         setCommandListener(this);
         App.channelIsOpen = true;
         updateTitle();
+        PluginManager.fireChannelViewOpened(this);
 
         backCommand = Locale.createCommand(BACK, Command.BACK, 0);
         selectCommand = Locale.createCommand(SELECT, Command.OK, 1);
@@ -1239,6 +1241,7 @@ public class ChannelView extends KineticScrollingCanvas implements CommandListen
             {
                 UnreadManager.save();
                 App.channelIsOpen = false;
+                PluginManager.fireChannelViewClosed(this);
                 if (App.isDM) App.openDMSelector(false, false);
                 else if (App.selectedChannel.isThread) App.openThreadSelector(false, false);
                 else App.openChannelSelector(false, false);

@@ -2,6 +2,7 @@ package com.gtrxac.discord;
 
 import javax.microedition.lcdui.*;
 import cc.nnproject.json.*;
+import com.gtrxac.discord.plugin.*;
 
 public class ChannelSelector extends ListScreen implements CommandListener, Strings {
     private Command viewThreadsCommand;
@@ -94,6 +95,7 @@ public class ChannelSelector extends ListScreen implements CommandListener, Stri
             else if (c == SELECT_COMMAND && !ch.isForum) {
                 App.isDM = false;
                 App.selectedChannel = ch;
+                PluginManager.fireChannelSelected(ch);
                 App.openChannelView(true);
             }
             // "View threads" command was used, or a channel was selected and it's a forum channel
