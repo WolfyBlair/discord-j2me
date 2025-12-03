@@ -21,6 +21,7 @@ Also see [Droidcord](https://github.com/leap0x7b/Droidcord), a Discord client fo
 * Gateway/live message updates (<abbr title="Not supported on MIDP 1.0">device dependent</abbr>)
 * <abbr title="Not in sync with official clients">Unread message indicators</abbr>
 * Emojis
+* Plugin system for extending functionality
 
 ### Not implemented
 * Jumping to messages (e.g. replies)
@@ -34,6 +35,9 @@ Also see [Droidcord](https://github.com/leap0x7b/Droidcord), a Discord client fo
 3. Download [ProGuard](https://github.com/Guardsquare/proguard/releases/latest). Extract the package and copy the extracted `lib/proguard.jar` file into the `sdk` folder.
 4. Download [midpapi20](https://github.com/vipaoL/j2me-build-tools/raw/c1598b6916f2ba2ad5be1c0accd1ed2a54c156f3/WTK2.5.2/lib/midpapi20.jar), [cldcapi10](https://github.com/vipaoL/j2me-build-tools/raw/c1598b6916f2ba2ad5be1c0accd1ed2a54c156f3/WTK2.5.2/lib/cldcapi10.jar), [cldcapi11](https://github.com/vipaoL/j2me-build-tools/raw/c1598b6916f2ba2ad5be1c0accd1ed2a54c156f3/WTK2.5.2/lib/cldcapi11.jar), [jsr75](https://github.com/vipaoL/j2me-build-tools/raw/c1598b6916f2ba2ad5be1c0accd1ed2a54c156f3/WTK2.5.2/lib/jsr75.jar), [javapiglerapi](https://nnp.nnchan.ru/pna/lib/javapiglerapi.jar), and [nokiaui](https://github.com/vipaoL/j2me-build-tools/raw/refs/heads/master/lib/nokiaui.jar) JARs. Place these in the `sdk/lib` folder.
 5. Run `build.sh` (Linux) or `build.bat` (Windows).
+
+## Plugin Development
+Discord for J2ME includes a plugin system that allows you to extend the client's functionality. See [Plugin SDK Documentation](sdk/PLUGIN_SDK.md) for details on creating plugins. Example plugins are available in the `sdk/example-plugin/` directory.
 
 ## Thanks
 * [@uwmpr](https://github.com/uwmpr) for formerly hosting the default proxy server
