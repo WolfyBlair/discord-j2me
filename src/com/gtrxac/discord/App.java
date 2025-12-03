@@ -59,23 +59,23 @@ public class App extends MIDlet implements Strings {
 
     public static final long DISCORD_EPOCH = 1420070400000L;
 
-    static Display disp;
+    public static Display disp;
 
-    static GatewayThread gateway;
+    public static GatewayThread gateway;
     static String uploadToken;
-    static String myUserId;
+    public static String myUserId;
     static boolean isLiteProxy;
 
-    static Vector guilds;
-    static Guild selectedGuild;
+    public static Vector guilds;
+    public static Guild selectedGuild;
     static GuildSelector guildSelector;
     static Vector subscribedGuilds;
 //#ifdef OVER_100KB
     static JSONArray unsortedGuilds;
 //#endif
 
-    static Vector channels;
-    static Channel selectedChannel;
+    public static Vector channels;
+    public static Channel selectedChannel;
     static ChannelSelector channelSelector;
     static boolean channelIsOpen;
 
@@ -83,8 +83,8 @@ public class App extends MIDlet implements Strings {
     static ThreadSelector threadSelector;
     static Channel selectedChannelForThreads;
 
-    static Vector messages;
-    static ChannelView channelView;
+    public static Vector messages;
+    public static ChannelView channelView;
     static Vector typingUsers;
     static Vector typingUserIDs;
 
@@ -93,17 +93,17 @@ public class App extends MIDlet implements Strings {
     // set to true if loading screen shouldn't be shown for next HTTPThread call
     static boolean dontShowLoadScreen;
 
-    static boolean isDM;
-    static Vector dmChannels;
-    static DMChannel selectedDmChannel;
+    public static boolean isDM;
+    public static Vector dmChannels;
+    public static DMChannel selectedDmChannel;
     static DMSelector dmSelector;
 
-    static Font authorFont;
-    static Font timestampFont;
-    static Font messageFont;
-    static Font titleFont;
+    public static Font authorFont;
+    public static Font timestampFont;
+    public static Font messageFont;
+    public static Font titleFont;
 
-    static Icons ic;
+    public static Icons ic;
 
     static {
         subscribedGuilds = new Vector();

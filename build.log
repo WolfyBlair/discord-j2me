@@ -1,0 +1,197 @@
+Generating translations
+________________________________________________________________________________
+
+ Compiling: discord_debug
+________________________________________________________________________________
+
+Setting up directories
+Preprocessing
+Copying assets
+Compiling
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Extracting libraries
+Creating JAR
+Verifying
+ProGuard, version 7.6.1
+842180 bin/discord_debug.jar
+________________________________________________________________________________
+
+ Compiling: discord_midp2
+________________________________________________________________________________
+
+Setting up directories
+Preprocessing
+Copying assets
+Compiling
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Creating JAR
+Verifying
+ProGuard, version 7.6.1
+154348 bin/discord_midp2.jar
+________________________________________________________________________________
+
+ Compiling: discord_midp2_alt
+________________________________________________________________________________
+
+Setting up directories
+Preprocessing
+Copying assets
+Compiling
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Creating JAR
+Verifying
+ProGuard, version 7.6.1
+146008 bin/discord_midp2_alt.jar
+________________________________________________________________________________
+
+ Compiling: discord_s40v3
+________________________________________________________________________________
+
+Setting up directories
+Preprocessing
+Copying assets
+Compiling
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Creating JAR
+Verifying
+ProGuard, version 7.6.1
+146724 bin/discord_s40v3.jar
+________________________________________________________________________________
+
+ Compiling: discord_midp2_alt_tls
+________________________________________________________________________________
+
+Setting up directories
+Preprocessing
+Copying assets
+Compiling
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Creating JAR
+Verifying
+ProGuard, version 7.6.1
+757983 bin/discord_midp2_alt_tls.jar
+________________________________________________________________________________
+
+ Compiling: discord_nokia_128px
+________________________________________________________________________________
+
+Setting up directories
+Preprocessing
+Copying assets
+Compiling
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Creating JAR
+Verifying
+ProGuard, version 7.6.1
+139731 bin/discord_nokia_128px.jar
+________________________________________________________________________________
+
+ Compiling: discord_nokia_128px_tls
+________________________________________________________________________________
+
+Setting up directories
+Preprocessing
+Copying assets
+Compiling
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Creating JAR
+Verifying
+ProGuard, version 7.6.1
+752358 bin/discord_nokia_128px_tls.jar
+________________________________________________________________________________
+
+ Compiling: discord_s60v2
+________________________________________________________________________________
+
+Setting up directories
+Preprocessing
+Copying assets
+Compiling
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Creating JAR
+Verifying
+ProGuard, version 7.6.1
+140331 bin/discord_s60v2.jar
+________________________________________________________________________________
+
+ Compiling: discord_s40v2
+________________________________________________________________________________
+
+Setting up directories
+Preprocessing
+Copying assets
+Compiling
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Creating JAR
+Verifying
+ProGuard, version 7.6.1
+132068 bin/discord_s40v2.jar
+________________________________________________________________________________
+
+ Compiling: discord_blackberry
+________________________________________________________________________________
+
+Setting up directories
+Preprocessing
+Copying assets
+Compiling
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Creating JAR
+Verifying
+ProGuard, version 7.6.1
+144779 bin/discord_blackberry.jar
+________________________________________________________________________________
+
+ Compiling: discord_samsung
+________________________________________________________________________________
+
+Setting up directories
+Preprocessing
+Copying assets
+Compiling
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Creating JAR
+Verifying
+ProGuard, version 7.6.1
+145049 bin/discord_samsung.jar
+________________________________________________________________________________
+
+ Compiling: discord_lg
+________________________________________________________________________________
+
+Setting up directories
+Preprocessing
+Copying assets
+Compiling
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Creating JAR
+Verifying
+ProGuard, version 7.6.1
+144376 bin/discord_lg.jar
+________________________________________________________________________________
+
+ Compiling: discord_jl
+________________________________________________________________________________
+
+Setting up directories
+Preprocessing
+Copying assets
+Compiling
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Creating JAR
+Verifying
+ProGuard, version 7.6.1
+147822 bin/discord_jl.jar
