@@ -76,7 +76,7 @@ public class Settings {
     static String api;
     static String gatewayUrl;
     static String cdn;
-    static String token;
+    public static String token;
 
     static int sendHotkey;
     static int replyHotkey;
